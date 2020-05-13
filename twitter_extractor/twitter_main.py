@@ -17,12 +17,14 @@ def create_dataframe():
                 tweets.append(tweet)
         # print(analyser.tweets_to_df([tweet]))
     df = analyser.tweets_to_df(tweets)
-    print(df.shape)
+    df.drop_duplicates(inplace=True)
+    df.dropna(inplace=True)
+    # print(df.shape)
     return df
 
 
 def run():
     twitter_streamer = TwitterStreamer()
-    twitter_streamer.stream_tweets(tweet_file=tweet_file,time_limit=1)
+    twitter_streamer.stream_tweets(tweet_file=tweet_file,time_limit=5)
 
     return create_dataframe()

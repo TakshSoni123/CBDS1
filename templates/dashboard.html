@@ -4,38 +4,130 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Dashbboard</title>
+    <title>Dashboard</title>
+     <style>
+        * {margin: 0; padding: 0}
+        body {background: #000;}
+        #content{
+            position: absolute;
+            left: 50px;
+            top: 50px;
+        }
+        canvas {display: block;
+        position: fixed}
+    </style>
+    <script type="text/javascript">
+    window.onload = function() {
+
+var chart = new CanvasJS.Chart("chartContainer", {
+	theme: "dark1", // "light1", "light2", "dark1", "dark2"
+	exportEnabled: true,
+	animationEnabled: true,
+	title: {
+		text: "Tweets Distribution"
+	},
+	data: [{
+		type: "pie",
+		startAngle: 25,
+		toolTipContent: "<b>{label}</b>: {y}%",
+		showInLegend: "true",
+		legendText: "{label}",
+		indexLabelFontSize: 16,
+		indexLabel: "{label} - {y}%",
+		dataPoints: [
+			{ y: '{{pie_bull}}', label: "Bully" },
+			{ y: '{{pie_nbull}}', label: "Not Bully" },
+		]
+	}]
+});
+chart.render();
+
+}
+</script>
 </head>
-<body style="margin-left:7%; background: #3399ff;
-        padding: 20px;">
-
-    <h style="font-size:80px; text-shadow:2px 0 0 #000; color:white;" >List of recent tweets and analysis</h>
+<body style="background: #000000;">
+    <canvas>
+    </canvas>
+    <div id="content">
+        <br>
+v    <h style="font-size:80px; text-shadow:2px 0 0 #000; color:yellowgreen; font-family: 'Bebas Neue'" >Analysis of recent tweets</h>
     <br>
-    <div style="margin-top:20px; margin-bottom:20px;">
-        <img style="border:2px solid black; border-radius:10px; margin:5px;" src="{% static 'chart1.png' %}" height="300" width="auto">
-        <img style="border:2px solid black; border-radius:10px;  margin:5px; " src="{% static 'chart2.png' %}" height="300" width="auto">
-        <img style="border:2px solid black; border-radius:10px;  margin:5px; " src="{% static 'chart3.png' %}" height="300" width="auto">
-    </div>
-            {% for i in tweets %}
-            <div style="height:auto;">
-                <div style="width:80%; height:auto; float:left; background: #cce5ff;
-             margin: 5px; border-radius:10px; padding:15px;  border:2px solid black;">
-                    <p style="padding-left:30px; margin-top:5px; margin-bottom:5px; font-size:28px;"><b>{{ i.0 }}</b></p>
-                    <p style="padding:30px; font-size:28px; display:inline;">{{ i.1  }}</p>
-                    <p style="padding:30px; font-size:28px; display:inline;">{{ i.2  }}</p>
-                </div>
-                <div style="width:10%; float:right; background: #cce5ff;
-             margin: 5px; margin-right:110px; padding-left:20px; padding-top:8px; padding-bottom:8px; border:2px solid black;  border-radius:10px;">
-                    {% if i.3 == 'Bully' %}
-                    <p style="font-size:30px; color:red; display:inline; padding-left:30px;">{{ i.3 }}</p>
-                    {% else %}
-                    <p style="font-size:30px; color:green; display:inline; padding-left:30px;">{{ i.3 }}</p>
-                    {% endif %}
-                </div>
-            </div>
-            {% endfor %}
+        <br>
 
-<!--    <h>Dashboard</h>-->
+    <script>
+        // Initialising the canvas
+        var canvas = document.querySelector('canvas'),
+            ctx = canvas.getContext('2d');
+
+        // Setting the width and height of the canvas
+        var body = document.body,
+        html = document.documentElement;
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        // Setting up the letters
+        var letters = 'ABCDEFGHIJKLMNOPQRSTUVXYZABCDEFGHIJKLMNOPQRSTUVXYZABCDEFGHIJKLMNOPQRSTUVXYZABCDEFGHIJKLMNOPQRSTUVXYZABCDEFGHIJKLMNOPQRSTUVXYZABCDEFGHIJKLMNOPQRSTUVXYZ';
+        letters = letters.split('');
+
+        // Setting up the columns
+        var fontSize = 10,
+            columns = canvas.width / fontSize;
+
+        // Setting up the drops
+        var drops = [];
+        for (var i = 0; i < columns; i++) {
+          drops[i] = 1;
+        }
+
+        // Setting up the draw function
+        function draw() {
+          ctx.fillStyle = 'rgba(0, 0, 0, .1)';
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+          for (var i = 0; i < drops.length; i++) {
+            var text = letters[Math.floor(Math.random() * letters.length)];
+            ctx.fillStyle = '#0f0';
+            ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+            drops[i]++;
+            if (drops[i] * fontSize > canvas.height && Math.random() > .95) {
+              drops[i] = 0;
+            }
+          }
+        }
+
+        // Loop the animation
+        setInterval(draw, 20);
+    </script>
+
+
+    <div id="chartContainer" style="height: 370px; width: 100%;"></div>
+    <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+        <br>
+        <br>
+        <br>
+        <h style="font-size:40px; text-shadow:2px 0 0 #000; color:yellowgreen; font-family: 'Bebas Neue'" >Tweets</h>
+            {% for i in tweets %}
+            <div style="height:auto;width:auto;">
+                <div style="width:80%; height:auto; float:left; background: #323232; color: white;margin: 5px; border-radius:10px; border-color: #717171;border-bottom-width: medium; padding:15px;  border:2px solid black;">
+                    <p style="padding-left:30px; display:inline; margin-bottom:5px; font-size:32px;"><b>{{ i.0 }}</b></p>
+                    <p style="padding-left:600px;padding-right:10px; font-size:15px;display:inline;">{{ i.2  }}</p>
+                    <p style="padding:30px; font-size:20px;">{{ i.1  }}</p>
+                </div>
+<!--                <div style="width:10%; float:right;border-bottom-color: #323232; color: #323232;-->
+<!--             margin: 5px; margin-right:110px; padding-left:20px; background: white; padding-top:8px; padding-bottom:8px; border:2px solid black;  border-radius:10px;">-->
+                    {% if i.3 == 'Bully' %}
+                    <div style="width:8%; float:right;color: #323232; font-family: 'Bebas Neue';
+                    margin: 5px; margin-right:110px; margin-top:10px;padding-left:20px; border-color: #717171; background: red; padding-top:14px; padding-bottom:14px; border:2px ;  border-radius:10px;"}>
+                    <p style="font-size:30px; display:inline-block;  margin-left: 25px">{{ i.3 }}</p>
+                    </div>
+                    {% else %}
+                    <div style="width:8%; float:right;border-bottom-color: #323232; color: #323232; font-family: 'Bebas Neue';margin: 5px; margin-right:110px; padding-left:20px; border-color: #717171; background: yellowgreen; padding-top:14px; padding-bottom:14px; border:2px solid black;  border-radius:10px;"}>
+                    <p style="font-size:30px; display:inline-block;  margin-left: 10px">{{ i.3 }}</p>
+                    </div>
+                {% endif %}
+            </div>
+            <br>
+            {% endfor %}
+        </div>
 
 </body>
 </html>
